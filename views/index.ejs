@@ -1,0 +1,11 @@
+<% layout("layout") %>
+<div class="jumbotron">
+    <h1>Node Graph Tutorial</h1>
+    <p class="lead">This sample app shows how to use the Microsoft Graph API to access Outlook data from Node.js</p>
+    <% if(user){ %>
+    <p>Welcome <%= user %>!</p>
+    <% }else{ %>
+    <a class="btn btn-primary btn-large" href="<%= signInUrl %>">Administrator login</a>
+    <a class="btn btn-primary btn-large" href="/book">Customer go to book</a>
+    <% } %>
+</div>
