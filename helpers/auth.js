@@ -1,18 +1,21 @@
-const jwt = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
 
-
+//// Prepare firebase
 var admin = require("firebase-admin"); // load firebase
-//Firebase Admin SDK secret's key path
+// Firebase Admin SDK secret's key path
 var serviceAccount = require("../project-nodejs-todolist-firebase-adminsdk-twmhu-d7b2603e62.json");
-//init firebase database
+// init firebase database
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://project-nodejs-todolist.firebaseio.com"
 });
 let fireData = admin.database();
-let ref = fireData.ref("outlookBookingsApp");
+let ref;
+////
 
-
+//// OAuth2 lets users grant the access to the desired resources to
+//// third party applications, giving them the possibility to enable
+//// and disable those accesses whenever they want.
 const credentials = {
     client: {
         id: process.env.APP_ID,
@@ -24,8 +27,8 @@ const credentials = {
         tokenPath: 'common/oauth2/v2.0/token'
     }
 };
-
 const oauth2 = require('simple-oauth2').create(credentials);
+////
 
 function getAuthUrl() {
     const returnVal = oauth2.authorizationCode.authorizeURL({
@@ -36,27 +39,7 @@ function getAuthUrl() {
     return returnVal;
 }
 
-function clearCookies(res) {
-    // Clear cookies
-    res.clearCookie('graph_access_token', {
-        maxAge: 3600000,
-        httpOnly: true
-    });
-    res.clearCookie('graph_user_name', {
-        maxAge: 3600000,
-        httpOnly: true
-    });
-    res.clearCookie('graph_refresh_token', {
-        maxAge: 7200000,
-        httpOnly: true
-    });
-    res.clearCookie('graph_token_expires', {
-        maxAge: 3600000,
-        httpOnly: true
-    });
-}
-
-async function getTokenFromCode(auth_code) {
+async function getTokenFromMS(auth_code) {
     let result = await oauth2.authorizationCode.getToken({
         code: auth_code,
         redirect_uri: process.env.REDIRECT_URI,
@@ -65,22 +48,22 @@ async function getTokenFromCode(auth_code) {
 
     const token = oauth2.accessToken.create(result);
     const tokens = token.token;
-    //    console.log("這邊是token資料群");
+
+    const user = jwt.decode(tokens.id_token);
+    //ref = fireData.ref("outlookBookingsApp/" + user.oid);
+    ref = fireData.ref("outlookBookingsApp");
     const eTime = tokens.expires_at.getTime();
-    console.log(eTime);
     ref.push({
         accessToken: tokens.access_token,
-        expiredTime: eTime,
+        expiredTime: tokens.expires_at.getTime(),
         idToken: tokens.id_token,
         refreshToken: tokens.refresh_token,
     });
-    //console.log('Token created: ', token.token);
-    //saveValuesToCookie();
-    return token.token;
 }
 
-async function getTokenFromDatabase() {
+async function getTokenFromDatabase(path) {
     let tokensFromFirebase = {};
+    ref = fireData.ref(path);
     await ref.once("value", function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
             let tokens = childSnapshot.val();
@@ -92,7 +75,6 @@ async function getTokenFromDatabase() {
             tokensFromFirebase.eT = tokens.expiredTime;
         });
     });
-
     return tokensFromFirebase;
 }
 
@@ -160,12 +142,10 @@ async function getNewAccessTokenDB(data) {
 
 exports.getAuthUrl = getAuthUrl;
 
-exports.clearCookies = clearCookies;
-
-exports.getTokenFromMS = getTokenFromCode;
+exports.getTokenFromMS = getTokenFromMS;
 
 exports.getTokenFromDB = getTokenFromDatabase;
 
-exports.getNewAccessToken = getNewAccessToken;
+//exports.getNewAccessToken = getNewAccessToken;
 
 exports.getNewAccessTokenDB = getNewAccessTokenDB;

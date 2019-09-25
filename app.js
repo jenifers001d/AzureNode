@@ -8,9 +8,9 @@ var engine = require("ejs-locals");
 require("dotenv").config();
 
 // router package
-var indexRouter = require('./routes/index');
+//var indexRouter = require('./routes/index');
+var registerURL = require("./routes/url");
 var authRouter = require("./routes/authorize");
-//var usersRouter = require('./routes/users');
 var bookRouter = require("./routes/book");
 
 var app = express();
@@ -37,27 +37,20 @@ app.use(function (req, res, next) {
 });
 
 
-
 //app.use("/", indexRouter);
-//app.use("/authorize", authRouter);
-//app.use('/users', usersRouter);
-//app.use("/book", bookRouter);
+app.use("/url", registerURL);
+app.use("/authorize", authRouter);
+app.use("/book", bookRouter);
 
+/* ！！！！！！！   Cannot use "app.use"   ！！！！！！！！ */
+//app.use('/', function (req, res) {
+//    res.sendFile(path.join(__dirname + '/index.html'))
+//    console.log(__dirname + '/index.html');
+//});
 
-/* test test test test */
-app.use('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'))
-    console.log(__dirname + '/index.html');
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
 });
-app.get("/book", function (req, res) {
-    console.log("有接到嗎？");
-    res.send({
-        "Hi": 123,
-        "name": "Jenifer"
-    });
-});
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
