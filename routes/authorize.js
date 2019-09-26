@@ -5,11 +5,12 @@ var authHelper = require("../helpers/auth");
 
 /* GET Access Token from MS */
 router.get("/", async function (req, res, next) {
-    const code = req.query.code;
+    /* After login, MS will return a auth_code to redirect page */
+    const auth_code = req.query.code;
 
-    if (code) {
+    if (auth_code) {
         try {
-            await authHelper.getTokenFromMS(code);
+            await authHelper.getTokenFromMS(auth_code);
             res.redirect('/');
         } catch (error) {
             res.render('error', {

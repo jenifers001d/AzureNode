@@ -30,6 +30,7 @@ const credentials = {
 const oauth2 = require('simple-oauth2').create(credentials);
 ////
 
+/* Create a MS login page URL */
 function getAuthUrl() {
     const returnVal = oauth2.authorizationCode.authorizeURL({
         redirect_uri: process.env.REDIRECT_URI,
@@ -39,6 +40,9 @@ function getAuthUrl() {
     return returnVal;
 }
 
+/* After login, MS will return a auth_code for OAuth2 */
+/* By OAuth2 mechanism, retrieve access token and refresh token */
+/* Store tokens into firebase */
 async function getTokenFromMS(auth_code) {
     let result = await oauth2.authorizationCode.getToken({
         code: auth_code,
@@ -61,6 +65,7 @@ async function getTokenFromMS(auth_code) {
     });
 }
 
+/* Get tokens from firebase (Google Database) */
 async function getTokenFromDatabase(path) {
     let tokensFromFirebase = {};
     ref = fireData.ref(path);
@@ -78,6 +83,8 @@ async function getTokenFromDatabase(path) {
     return tokensFromFirebase;
 }
 
+/* Check if access token is expired or not */
+/* If it is, get a new access token with refresh token */
 async function getNewAccessTokenDB(data) {
     let access_token = data.aT;
 
