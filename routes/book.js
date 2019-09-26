@@ -48,18 +48,12 @@ router.get("/", async function (req, res, next) {
                 .select("serviceName,serviceId,duration,start,end")
                 .version("beta")
                 .get();
-            //parms.business = JSON.stringify(business, null, 2);
-            //parms.services = JSON.stringify(service, null, 2);
-            //parms.events = JSON.stringify(event.value, null, 2);
             parms.business = business;
             parms.services = service;
             parms.events = event.value;
             res.send(JSON.stringify(parms));
         } catch (err) {
-            console.log(err.code);
-            console.log(err.message);
-
-            parms.message = "Error retrieving messages";
+            parms.message = "Error retrieving bookings app data";
             parms.error = {
                 status: `${err.code}: ${err.message}`,
                 stack: JSON.stringify(err.body, null, 2),
@@ -87,21 +81,15 @@ router.post("/", async function (req, res) {
             .version('beta')
             .post(req.body);
 
-        console.log(resText);
         res.send(resText);
-
     } catch (err) {
         let parms = {};
-        console.log(err.code);
-        console.log(err.message);
-
-        //        parms.message = "Error retrieving messages";
-        //        parms.error = {
-        //            status: `${err.code}: ${err.message}`,
-        //            stack: JSON.stringify(err.body, null, 2),
-        //        };
-        //        res.render("error", parms);
-        res.send(JSON.stringify(err, null, 2));
+        parms.message = "Error retrieving bookings app data";
+        parms.error = {
+            status: `${err.code}: ${err.message}`,
+            stack: JSON.stringify(err.body, null, 2),
+        };
+        res.render("error", parms);
     }
 });
 

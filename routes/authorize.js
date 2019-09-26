@@ -13,7 +13,6 @@ router.get("/", async function (req, res, next) {
             res.redirect('/');
         } catch (error) {
             res.render('error', {
-                title: 'Error',
                 message: 'Error exchanging code for token',
                 error: {
                     status: "Cannot convert to token",
@@ -24,7 +23,6 @@ router.get("/", async function (req, res, next) {
 
     } else {
         res.render("error", {
-            title: 'Error',
             message: 'Authorization error',
             error: {
                 status: 'Missing code parameter',

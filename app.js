@@ -8,7 +8,6 @@ var engine = require("ejs-locals");
 require("dotenv").config();
 
 // router package
-//var indexRouter = require('./routes/index');
 var registerURL = require("./routes/url");
 var authRouter = require("./routes/authorize");
 var bookRouter = require("./routes/book");
@@ -37,7 +36,6 @@ app.use(function (req, res, next) {
 });
 
 
-//app.use("/", indexRouter);
 app.use("/url", registerURL);
 app.use("/authorize", authRouter);
 app.use("/book", bookRouter);
