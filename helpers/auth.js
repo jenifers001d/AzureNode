@@ -46,8 +46,8 @@ async function getTokenFromMS(auth_code) {
     const tokens = token.token;
 
     const user = jwt.decode(tokens.id_token);
-    //ref = fireData.ref("outlookBookingsApp/" + user.oid);
-    ref = fireData.ref("outlookBookingsApp");
+    //ref = firebaseDb.ref("outlookBookingsApp/" + user.oid);
+    ref = firebaseDb.ref("outlookBookingsApp");
     const eTime = tokens.expires_at.getTime();
     ref.push({
         accessToken: tokens.access_token,
@@ -60,7 +60,7 @@ async function getTokenFromMS(auth_code) {
 /* Get tokens from firebase (Google Database) */
 async function getTokenFromDatabase(path) {
     let tokensFromFirebase = {};
-    ref = fireData.ref(path);
+    ref = firebaseDb.ref(path);
     await ref.once("value", function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
             let tokens = childSnapshot.val();
