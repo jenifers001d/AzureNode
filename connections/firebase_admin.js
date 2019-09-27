@@ -1,3 +1,4 @@
+require("dotenv").config();
 const admin = require("firebase-admin");
 
 // Firebase Admin SDK secret params
