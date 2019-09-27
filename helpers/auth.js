@@ -1,17 +1,9 @@
 var jwt = require('jsonwebtoken');
 
-//// Prepare firebase
-var admin = require("firebase-admin"); // load firebase
-// Firebase Admin SDK secret's key path
-var serviceAccount = require("../project-nodejs-todolist-firebase-adminsdk-twmhu-d7b2603e62.json");
-// init firebase database
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://project-nodejs-todolist.firebaseio.com"
-});
-let fireData = admin.database();
+// Prepare firebase
+const firebaseDb = require("../connections/firebase_admin");
 let ref;
-////
+
 
 //// OAuth2 lets users grant the access to the desired resources to
 //// third party applications, giving them the possibility to enable
