@@ -31,8 +31,8 @@ router.get("/", async function (req, res, next) {
             },
         });
 
+
         try {
-            //Get the 10 newest messages from inbox
             const business = await client
                 .api("/bookingBusinesses/" + process.env.ORG_ID)
                 .select("businessHours,schedulingPolicy")
@@ -48,6 +48,7 @@ router.get("/", async function (req, res, next) {
                 .select("serviceName,serviceId,duration,start,end")
                 .version("beta")
                 .get();
+
             parms.business = business;
             parms.services = service;
             parms.events = event.value;
