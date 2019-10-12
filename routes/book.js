@@ -40,7 +40,7 @@ router.get("/", async function (req, res, next) {
                 .get();
             const service = await client
                 .api("/bookingBusinesses/" + process.env.ORG_ID + "/services")
-                .select("displayName,defaultDuration")
+                .select("id,displayName,defaultDuration")
                 .version("beta")
                 .get();
             const event = await client
@@ -50,7 +50,7 @@ router.get("/", async function (req, res, next) {
                 .get();
 
             parms.business = business;
-            parms.services = service;
+            parms.services = service.value;
             parms.events = event.value;
             res.send(JSON.stringify(parms));
         } catch (err) {
